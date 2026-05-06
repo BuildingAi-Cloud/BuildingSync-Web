@@ -1,20 +1,31 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 
+const ADMIN_HOST = process.env.ADMIN_HOST || "admin.buildingsync.app";
+
 export default async function Home() {
+  const h = await headers();
+  const host = h.get("host") || "";
+  const isAdminHost = host === ADMIN_HOST || host.startsWith("admin.");
+
   const supabase = createClient(await cookies());
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Authed visitors → route to their surface. Anonymous → marketing.
+  // Authed visitors → route to the surface that matches their role on the
+  // right host. Platform admins are bounced to admin.* if they came via www.
   if (user) {
     const appUser = await prisma.user.findUnique({ where: { id: user.id } });
     if (appUser) {
       switch (appUser.role) {
         case "platform_admin":
-          redirect("/platform");
+          redirect(
+            isAdminHost || process.env.NODE_ENV !== "production"
+              ? "/platform"
+              : `https://${ADMIN_HOST}/platform`,
+          );
         case "building_manager":
         case "facility_manager":
         case "concierge":
