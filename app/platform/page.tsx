@@ -46,18 +46,24 @@ export default async function PlatformDashboard() {
           <div className="mt-4 bg-card border border-border rounded-md overflow-hidden">
             <ul className="divide-y divide-border">
               {buildings.map((b) => (
-                <li key={b.id} className="px-5 py-4 flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="font-medium truncate">{b.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {b.address}, {b.city}, {b.state} {b.zipCode}
+                <li key={b.id}>
+                  <Link
+                    href={`/platform/buildings/${b.id}`}
+                    className="px-5 py-4 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{b.name}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {b.address}, {b.city}, {b.state} {b.zipCode}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-4 text-sm text-muted-foreground tabular-nums whitespace-nowrap">
-                    <span>{b._count.users} users</span>
-                    <span>{b._count.units} units</span>
-                    <span>{b._count.workOrders} WO</span>
-                  </div>
+                    <div className="flex gap-4 text-sm text-muted-foreground tabular-nums whitespace-nowrap">
+                      <span>{b._count.users} users</span>
+                      <span>{b._count.units} units</span>
+                      <span>{b._count.workOrders} WO</span>
+                      <span aria-hidden className="text-muted-foreground/60">›</span>
+                    </div>
+                  </Link>
                 </li>
               ))}
             </ul>

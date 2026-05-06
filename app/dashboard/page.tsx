@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Wordmark } from "@/components/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const STAFF_ROLES = ["building_manager", "facility_manager", "concierge"] as const;
 
@@ -28,7 +29,8 @@ export default async function DashboardPage() {
             <span className="text-xs text-muted-foreground uppercase tracking-wider">{appUser.role}</span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-muted-foreground hidden sm:inline">{authUser.email}</span>
+            <ThemeToggle />
+            <span className="text-muted-foreground hidden md:inline">{authUser.email}</span>
             <form action="/auth/signout" method="post">
               <button className="px-3 py-1.5 rounded-md border border-border hover:bg-muted transition-colors text-sm">
                 Sign out

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requirePlatformAdmin } from "@/lib/platform";
 import { Wordmark } from "@/components/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function PlatformLayout({ children }: { children: React.ReactNode }) {
   const { authUser } = await requirePlatformAdmin();
@@ -20,7 +21,8 @@ export default async function PlatformLayout({ children }: { children: React.Rea
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-muted-foreground hidden sm:inline">{authUser.email}</span>
+            <ThemeToggle />
+            <span className="text-muted-foreground hidden md:inline">{authUser.email}</span>
             <form action="/auth/signout" method="post">
               <button className="px-3 py-1.5 rounded-md border border-border hover:bg-muted transition-colors text-sm">
                 Sign out

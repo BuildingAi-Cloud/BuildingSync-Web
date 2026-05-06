@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireTeam } from "@/lib/team";
 import { Wordmark } from "@/components/ui";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function TeamLayout({ children }: { children: React.ReactNode }) {
   const { authUser, appUser } = await requireTeam();
@@ -29,7 +30,8 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-muted-foreground hidden sm:inline">
+            <ThemeToggle />
+            <span className="text-muted-foreground hidden md:inline">
               {authUser.email} · {appUser.role.replace("_", " ")}
             </span>
             <form action="/auth/signout" method="post">

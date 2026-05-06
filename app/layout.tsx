@@ -34,14 +34,32 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f8f8" },
+    { media: "(prefers-color-scheme: light)", color: "#efeae0" },
     { media: "(prefers-color-scheme: dark)", color: "#141414" },
   ],
 };
 
+// Inline pre-paint script — sets the saved theme attribute before React mounts
+// so authed pages don't flash the wrong palette on every navigation.
+const themeBootstrap = `
+(function() {
+  try {
+    var t = localStorage.getItem('bs-theme') || 'paper';
+    var html = document.documentElement;
+    html.classList.remove('dark');
+    html.removeAttribute('data-theme');
+    if (t === 'dark') html.setAttribute('data-theme', 'dark');
+    else if (t === 'paper') html.setAttribute('data-theme', 'paper');
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
       <body
         className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} ${bebasNeue.variable} font-sans antialiased`}
         suppressHydrationWarning
