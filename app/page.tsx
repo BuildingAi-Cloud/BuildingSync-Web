@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { LinkButton, Wordmark } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SplitFlapText } from "@/components/SplitFlapText";
 
 const ADMIN_HOST = process.env.ADMIN_HOST || "admin.buildingsync.app";
 
@@ -125,10 +126,10 @@ function SiteHeader({ portalUrl, portalLabel }: { portalUrl: string | null; port
 function Hero({ portalUrl, portalLabel }: { portalUrl: string | null; portalLabel: string }) {
   return (
     <section className="relative max-w-7xl mx-auto px-6 pt-12 md:pt-20 pb-16 md:pb-24">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">R1 · Property platform</p>
+      <SplitFlapText text="BUILDSYNC" />
 
       <h1
-        className="mt-6 md:mt-8 tracking-tight leading-[1.05] text-foreground"
+        className="mt-10 md:mt-14 tracking-tight leading-[1.05] text-foreground"
         style={{
           fontFamily: "var(--font-bebas)",
           fontSize: "clamp(2.75rem, 6vw, 5rem)",
