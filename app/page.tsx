@@ -38,7 +38,15 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
   let portalUrl: string | null = null;
   let portalLabel = "Continue";
   if (user) {
-    const appUser = await prisma.user.findUnique({ where: { id: user.id } });
+    // Defensive: a Prisma error here (e.g. a schema-vs-DB mismatch we
+    // haven't caught yet) shouldn't 500 the public landing. Worst case
+    // we render the anonymous landing and the user re-clicks Sign in.
+    const appUser = await prisma.user
+      .findUnique({ where: { id: user.id } })
+      .catch((err) => {
+        console.error("[home] prisma.user.findUnique failed", err);
+        return null;
+      });
     if (appUser) {
       switch (appUser.role) {
         case "admin":
