@@ -33,7 +33,7 @@ export function BetaBanner() {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="sticky top-0 z-[70] bg-accent text-accent-foreground overflow-hidden"
+          className="sticky top-0 z-70 bg-accent text-accent-foreground overflow-hidden"
           role="status"
           aria-live="polite"
         >
