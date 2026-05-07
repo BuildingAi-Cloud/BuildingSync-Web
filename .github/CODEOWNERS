@@ -3,7 +3,7 @@
 
 # Extra-sensitive paths — both admins must review
 /.github/                @tejaswirajgit  @sinhaankur
-/middleware.ts           @tejaswirajgit  @sinhaankur
+/proxy.ts                @tejaswirajgit  @sinhaankur
 /lib/auth.ts             @tejaswirajgit  @sinhaankur
 /lib/platform.ts         @tejaswirajgit  @sinhaankur
 /lib/team.ts             @tejaswirajgit  @sinhaankur
