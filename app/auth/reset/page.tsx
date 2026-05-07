@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
-import { Wordmark } from "@/components/ui";
+import { AuthShell } from "@/components/AuthShell";
 
 function passwordStrength(pw: string): { score: 0 | 1 | 2 | 3 | 4; label: string } {
   if (pw.length === 0) return { score: 0, label: "" };
@@ -58,18 +58,8 @@ export default function ResetPage() {
   }
 
   return (
-    <main className="min-h-dvh flex items-center justify-center px-4 py-10 bg-background">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md space-y-6"
-      >
-        <Link href="/" className="block text-center" aria-label="BuildingSync home">
-          <Wordmark className="text-2xl" />
-        </Link>
-
-        <div className="bg-card border border-border rounded-xl p-7 sm:p-8 shadow-sm">
+    <AuthShell back={{ href: "/signin", label: "Sign in" }}>
+      <div className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
           {done ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
@@ -175,8 +165,7 @@ export default function ResetPage() {
               </form>
             </>
           )}
-        </div>
-      </motion.div>
-    </main>
+      </div>
+    </AuthShell>
   );
 }

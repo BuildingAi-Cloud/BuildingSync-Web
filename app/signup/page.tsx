@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
-import { Wordmark } from "@/components/ui";
+import { AuthShell } from "@/components/AuthShell";
 
 function passwordStrength(pw: string): { score: 0 | 1 | 2 | 3 | 4; label: string } {
   if (pw.length === 0) return { score: 0, label: "" };
@@ -79,17 +79,15 @@ export default function SignUpPage() {
   }
 
   return (
-    <main className="min-h-dvh flex items-center justify-center px-4 py-10 bg-background">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md space-y-6"
-      >
-        <Link href="/" className="block text-center" aria-label="BuildingSync home">
-          <Wordmark className="text-2xl" />
+    <AuthShell
+      back={{ href: "/", label: "Home" }}
+      rightSlot={
+        <Link href="/signin" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          Sign in
         </Link>
-
+      }
+    >
+      <div>
         <div className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-sm">
           {!done && <Stepper current={step} />}
 
@@ -180,14 +178,14 @@ export default function SignUpPage() {
           </AnimatePresence>
         </div>
 
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
           By creating an account you agree to our{" "}
           <Link href="/terms" className="hover:text-foreground transition-colors underline underline-offset-2">Terms</Link>
           {" "}and{" "}
           <Link href="/privacy" className="hover:text-foreground transition-colors underline underline-offset-2">Privacy Policy</Link>.
         </p>
-      </motion.div>
-    </main>
+      </div>
+    </AuthShell>
   );
 }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Wordmark } from "@/components/ui";
+import { AuthShell } from "@/components/AuthShell";
 
 export const metadata: Metadata = {
   title: "Terms of Service — BuildingSync",
@@ -11,15 +11,8 @@ const LAST_UPDATED = "May 2026";
 
 export default function TermsPage() {
   return (
-    <div className="min-h-dvh">
-      <header className="border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" aria-label="BuildingSync home"><Wordmark className="text-base" /></Link>
-          <Link href="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back home</Link>
-        </div>
-      </header>
-
-      <main className="max-w-3xl mx-auto px-6 py-12 md:py-16">
+    <AuthShell back={{ href: "/", label: "Home" }} width="wide">
+      <div className="py-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">Trust</p>
         <h1
           className="mt-3 tracking-tight"
@@ -106,14 +99,8 @@ export default function TermsPage() {
             <p>Questions or notices: <a href="mailto:info@buildingsync.app" className="text-accent hover:underline">info@buildingsync.app</a>.</p>
           </Section>
         </div>
-      </main>
-
-      <footer className="max-w-3xl mx-auto px-6 py-8 border-t border-border mt-12">
-        <p className="text-xs text-muted-foreground font-mono">
-          © {new Date().getFullYear()} BuildingSync · <Link href="/" className="hover:text-foreground transition-colors">Home</Link> · <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-        </p>
-      </footer>
-    </div>
+      </div>
+    </AuthShell>
   );
 }
 
