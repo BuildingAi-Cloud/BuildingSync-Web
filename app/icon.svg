@@ -1,1 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#141414"/><text x="32" y="42" font-family="system-ui,sans-serif" font-size="32" font-weight="700" fill="#fff" text-anchor="middle">B</text></svg>
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="BuildSync">
+  <style>
+    .bg { fill: #141414; }
+    .fg { fill: #f8f8f8; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #f8f8f8; }
+      .fg { fill: #141414; }
+    }
+  </style>
+  <rect class="bg" width="180" height="180" rx="36"/>
+  <g class="fg">
+    <rect x="50" y="40" width="18" height="100"/>
+    <rect x="50" y="40" width="70" height="18"/>
+    <rect x="102" y="58" width="18" height="24"/>
+    <rect x="50" y="82" width="78" height="18"/>
+    <rect x="110" y="100" width="18" height="22"/>
+    <rect x="50" y="122" width="78" height="18"/>
+  </g>
+</svg>
