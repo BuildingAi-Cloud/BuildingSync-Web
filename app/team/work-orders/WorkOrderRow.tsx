@@ -113,7 +113,7 @@ export function WorkOrderRow({ workOrder, canAct }: Props) {
               {expanded ? "Show less" : "Show more"}
             </button>
           )}
-          <p className="mt-3 text-xs text-muted-foreground/70">
+          <p className="mt-3 text-xs text-muted-foreground/85">
             Opened {new Date(workOrder.createdAt).toLocaleString()} by {workOrder.openedByLabel}
             {workOrder.assignedToLabel ? ` · Assigned to ${workOrder.assignedToLabel}` : ""}
           </p>

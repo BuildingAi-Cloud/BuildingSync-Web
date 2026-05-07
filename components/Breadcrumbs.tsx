@@ -15,7 +15,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
               ) : (
                 <span className={isLast ? "text-foreground" : ""}>{c.label}</span>
               )}
-              {!isLast && <span aria-hidden="true" className="text-muted-foreground/50">/</span>}
+              {!isLast && <span aria-hidden="true" className="text-muted-foreground/75">/</span>}
             </li>
           );
         })}

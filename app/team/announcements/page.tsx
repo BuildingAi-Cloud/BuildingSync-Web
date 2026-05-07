@@ -42,7 +42,7 @@ export default async function TeamAnnouncementsPage() {
               <li key={a.id} className="bg-card border border-border rounded-md p-4">
                 <h3 className="font-medium">{a.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground whitespace-pre-wrap">{a.body}</p>
-                <p className="mt-3 text-xs text-muted-foreground/70">{formatRelative(a.createdAt)}</p>
+                <p className="mt-3 text-xs text-muted-foreground/85">{formatRelative(a.createdAt)}</p>
               </li>
             ))}
           </ul>

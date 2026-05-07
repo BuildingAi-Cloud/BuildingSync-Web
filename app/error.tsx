@@ -26,7 +26,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
           <a href="mailto:info@buildingsync.app" className="text-accent hover:underline">info@buildingsync.app</a>.
         </p>
         {error.digest && (
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/60">
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground/80">
             Reference: {error.digest}
           </p>
         )}

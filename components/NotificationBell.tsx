@@ -102,7 +102,7 @@ export function NotificationBell({ items }: { items: NotificationItem[] }) {
             {items.length === 0 ? (
               <div className="px-4 py-8 text-center">
                 <p className="text-sm text-muted-foreground">Nothing new.</p>
-                <p className="mt-1 text-xs text-muted-foreground/70">
+                <p className="mt-1 text-xs text-muted-foreground/85">
                   Updates to work orders and new announcements will show up here.
                 </p>
               </div>

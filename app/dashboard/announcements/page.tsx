@@ -42,7 +42,7 @@ export default async function AnnouncementsPage() {
             <li key={a.id} className="bg-card border border-border rounded-md p-5">
               <h2 className="font-semibold">{a.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap">{a.body}</p>
-              <p className="mt-4 text-xs text-muted-foreground/70">
+              <p className="mt-4 text-xs text-muted-foreground/85">
                 {formatRelative(a.createdAt)}
               </p>
             </li>

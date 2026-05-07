@@ -52,7 +52,7 @@ export default async function MaintenancePage() {
                   </span>
                 </div>
                 {wo.description && <p className="mt-2 text-sm text-muted-foreground">{wo.description}</p>}
-                <p className="mt-3 text-xs text-muted-foreground/70">
+                <p className="mt-3 text-xs text-muted-foreground/85">
                   Opened {formatRelative(wo.createdAt)}
                 </p>
               </li>

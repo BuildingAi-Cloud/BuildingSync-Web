@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                 <li key={wo.id} className="bg-card border border-border rounded-md px-4 py-3 flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="font-medium truncate">{wo.issue}</div>
-                    <div className="text-xs text-muted-foreground/70 mt-0.5">
+                    <div className="text-xs text-muted-foreground/85 mt-0.5">
                       {formatRelative(wo.createdAt)}
                     </div>
                   </div>
@@ -187,7 +187,7 @@ export default async function DashboardPage() {
                 <li key={a.id} className="bg-card border border-border rounded-md px-4 py-3">
                   <div className="font-medium">{a.title}</div>
                   <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{a.body}</div>
-                  <div className="text-xs text-muted-foreground/70 mt-2">
+                  <div className="text-xs text-muted-foreground/85 mt-2">
                     {formatRelative(a.createdAt)}
                   </div>
                 </li>

@@ -221,7 +221,7 @@ function ProfileStep({
 
       <div>
         <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-1.5">
-          Phone <span className="text-muted-foreground/70 font-normal">(optional)</span>
+          Phone <span className="text-muted-foreground/85 font-normal">(optional)</span>
         </label>
         <input
           id="phone" type="tel" maxLength={40} placeholder="+1 555 555 5555"

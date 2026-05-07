@@ -61,7 +61,7 @@ export default async function PlatformDashboard() {
                       <span>{b._count.users} users</span>
                       <span>{b._count.units} units</span>
                       <span>{b._count.workOrders} WO</span>
-                      <span aria-hidden className="text-muted-foreground/60">›</span>
+                      <span aria-hidden className="text-muted-foreground/80">›</span>
                     </div>
                   </Link>
                 </li>

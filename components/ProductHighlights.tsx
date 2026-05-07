@@ -166,7 +166,7 @@ export function ProductHighlights() {
         />
       </div>
 
-      <p className="mb-4 font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest select-none">
+      <p className="mb-4 font-mono text-[10px] text-muted-foreground/85 uppercase tracking-widest select-none">
         <span className="md:hidden">Swipe to explore</span>
         <span className="hidden md:inline">Drag or use arrows to explore</span>
       </p>

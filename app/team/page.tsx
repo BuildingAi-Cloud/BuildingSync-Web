@@ -90,7 +90,7 @@ export default async function TeamHome() {
                         <span className="text-xs text-muted-foreground">Unit {wo.unit}</span>
                       )}
                     </div>
-                    <div className="text-xs text-muted-foreground/70 mt-1">
+                    <div className="text-xs text-muted-foreground/85 mt-1">
                       Opened by {wo.openedBy ? (wo.openedBy.name || wo.openedBy.email) : "—"} · {formatRelative(wo.createdAt)}
                     </div>
                   </div>
