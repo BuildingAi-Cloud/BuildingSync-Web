@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
 import { AuthShell } from "@/components/AuthShell";
+import { resolvePortalUrl } from "./actions";
 
 const inputClass =
   "w-full bg-background border border-border rounded-md px-3 py-2.5 text-sm focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 transition-colors";
@@ -69,8 +70,15 @@ function SignInPageInner() {
       return;
     }
     toast.success("Welcome back", { description: email });
-    router.push("/?go=1");
-    router.refresh();
+    // Resolve destination on the server (knows the user's role + onboarding
+    // state) so we navigate directly there instead of flashing through "/".
+    const dest = await resolvePortalUrl().catch(() => "/dashboard");
+    if (dest.startsWith("http")) {
+      window.location.href = dest;
+    } else {
+      router.push(dest);
+      router.refresh();
+    }
   }
 
   async function onReset(e: React.FormEvent) {
