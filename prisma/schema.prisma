@@ -116,6 +116,7 @@ model User {
   workOrdersOpened  WorkOrder[]     @relation("WorkOrderOpener")
   workOrdersAssign  WorkOrder[]     @relation("WorkOrderAssignee")
   announcementsBy   Announcement[]  @relation("AnnouncementAuthor")
+  documentsBy       Document[]      @relation("DocumentUploader")
   auditLogs         AuditLog[]      @relation("AuditActor")
 
   @@index([buildingId])
@@ -152,6 +153,7 @@ model Building {
   leases        Lease[]
   workOrders    WorkOrder[]
   announcements Announcement[]
+  documents     Document[]
   auditLogs     AuditLog[]
 }
 
@@ -261,6 +263,32 @@ model Announcement {
 
   @@index([buildingId, createdAt(sort: Desc)])
   @@index([deletedAt])
+}
+
+// Building-scoped document library. Files live in Supabase Storage; this
+// table is metadata. Soft-deleted via deletedAt so RTA / LTB evidence
+// trails are preserved even after a BM removes a document from view.
+model Document {
+  id            String    @id @default(cuid())
+  buildingId    String
+  title         String
+  description   String?
+  storagePath   String    // e.g. "documents/{buildingId}/{id}/{filename}"
+  mimeType      String
+  sizeBytes     Int
+  category      String    @default("other") // bylaws | fire_safety | lease | vendor | insurance | maintenance | other
+  visibility    String    @default("staff_only") // public | staff_only
+  uploadedById  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  uploadedBy User     @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  @@index([buildingId, visibility, deletedAt])
+  @@index([uploadedById])
+  @@index([createdAt(sort: Desc)])
 }
 
 // Append-only audit trail. Matches the live DB shape (userId/resource/

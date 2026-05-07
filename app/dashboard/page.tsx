@@ -53,6 +53,7 @@ export default async function DashboardPage() {
   const navItems: MobileNavItem[] = [
     { href: "/dashboard/maintenance", label: "Maintenance" },
     { href: "/dashboard/announcements", label: "Announcements" },
+    { href: "/dashboard/documents", label: "Documents" },
     { href: "/dashboard/account", label: "Account" },
   ];
   const mobileFooter = (

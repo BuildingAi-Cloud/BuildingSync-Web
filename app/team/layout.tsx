@@ -29,6 +29,7 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
   if (appUser.role === "concierge" || appUser.role === "building_manager") {
     items.push({ href: "/team/packages", label: "Packages" });
   }
+  items.push({ href: "/team/documents", label: "Documents" });
   items.push({ href: "/team/account", label: "Account" });
 
   const mobileFooter = (
