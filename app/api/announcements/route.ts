@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getOrCreateAppUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendEmailFireAndForget, announcementBroadcastEmail } from "@/lib/email";
 
 const Body = z.object({
   title: z.string().trim().min(1).max(200),
@@ -31,6 +32,30 @@ export async function POST(request: NextRequest) {
       body: parsed.data.body,
     },
   });
+
+  // Broadcast to active residents/tenants in this building.
+  const [recipients, building] = await Promise.all([
+    prisma.user.findMany({
+      where: {
+        buildingId: appUser.buildingId,
+        role: { in: ["resident", "tenant"] },
+        isActive: true,
+      },
+      select: { email: true },
+    }),
+    prisma.building.findUnique({ where: { id: appUser.buildingId }, select: { name: true } }),
+  ]);
+  if (recipients.length > 0) {
+    sendEmailFireAndForget({
+      to: recipients.map((r) => r.email),
+      ...announcementBroadcastEmail({
+        title: announcement.title,
+        body: announcement.body,
+        buildingName: building?.name ?? null,
+        authorLabel: appUser.name || appUser.email,
+      }),
+    });
+  }
 
   return NextResponse.json({ announcement }, { status: 201 });
 }

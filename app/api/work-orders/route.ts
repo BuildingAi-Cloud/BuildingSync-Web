@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getOrCreateAppUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendEmailFireAndForget, workOrderCreatedEmail } from "@/lib/email";
 
 const CreateBody = z.object({
   title: z.string().trim().min(1).max(200),
@@ -46,6 +47,34 @@ export async function POST(request: NextRequest) {
       description: parsed.data.description,
     },
   });
+
+  // Notify FMs (and BMs as fallback) in this building. Fire-and-forget so
+  // a slow Resend call never blocks the resident's submit.
+  const [recipients, building, unit] = await Promise.all([
+    prisma.user.findMany({
+      where: {
+        buildingId: appUser.buildingId,
+        role: { in: ["facility_manager", "building_manager"] },
+        isActive: true,
+      },
+      select: { email: true },
+    }),
+    prisma.building.findUnique({ where: { id: appUser.buildingId }, select: { name: true } }),
+    appUser.unitId ? prisma.unit.findUnique({ where: { id: appUser.unitId }, select: { unitNumber: true } }) : Promise.resolve(null),
+  ]);
+  if (recipients.length > 0) {
+    sendEmailFireAndForget({
+      to: recipients.map((r) => r.email),
+      ...workOrderCreatedEmail({
+        title: workOrder.title,
+        description: workOrder.description,
+        openedByLabel: appUser.name || appUser.email,
+        unitLabel: unit?.unitNumber ?? null,
+        buildingName: building?.name ?? null,
+        workOrderId: workOrder.id,
+      }),
+    });
+  }
 
   return NextResponse.json({ workOrder }, { status: 201 });
 }

@@ -27,6 +27,7 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
               {(appUser.role === "concierge" || appUser.role === "building_manager") && (
                 <Link href="/team/packages" className="text-muted-foreground hover:text-foreground transition-colors">Packages</Link>
               )}
+              <Link href="/team/account" className="text-muted-foreground hover:text-foreground transition-colors">Account</Link>
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm">

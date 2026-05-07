@@ -6,6 +6,17 @@ import { z } from "zod";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
+import { sendEmail, welcomeEmail } from "@/lib/email";
+
+// Server-side Supabase client with the SERVICE_ROLE key — required for
+// auth.admin.createUser. Never expose this client to the browser.
+function adminSupabase() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  );
+}
 
 const Body = z.object({
   email: z.string().email().toLowerCase(),
@@ -61,15 +72,17 @@ export async function addResident(_prev: unknown, formData: FormData): Promise<R
     return { ok: true, email, password: null, message: `Re-linked existing account.` };
   }
 
-  // New user — create via Supabase Auth.
+  // New user — create via Supabase admin API. email_confirm:true skips
+  // Supabase's confirmation email; we send our own branded welcome via Resend.
   const password = generatePassword();
-  const supabase = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  );
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const supabase = adminSupabase();
+  const { data, error } = await supabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  });
   if (error || !data.user?.id) {
-    return { ok: false, error: error?.message || "Supabase didn't return a user id (rate limit?)." };
+    return { ok: false, error: error?.message || "Supabase didn't return a user id." };
   }
 
   await prisma.user.create({
@@ -82,12 +95,24 @@ export async function addResident(_prev: unknown, formData: FormData): Promise<R
     },
   });
 
+  // Welcome email with temp password + sign-in link. Awaited so a delivery
+  // failure surfaces alongside the success card (BM/FM still has the
+  // password to share manually if email bounces).
+  const building = await prisma.building.findUnique({
+    where: { id: session.appUser.buildingId },
+    select: { name: true },
+  });
+  await sendEmail({
+    to: email,
+    ...welcomeEmail({ email, password, buildingName: building?.name ?? null, role }),
+  });
+
   revalidatePath("/team/residents");
   return {
     ok: true,
     email,
     password,
-    message: "Account created. Share the temporary password with them.",
+    message: "Account created and welcome email sent. Share the temporary password if email doesn't arrive.",
   };
 }
 
@@ -133,10 +158,11 @@ export async function bulkAddResidents(_prev: unknown, formData: FormData): Prom
   });
   const unitByNumber = new Map(units.map((u) => [u.unitNumber.toLowerCase(), u.id]));
 
-  const supabase = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  );
+  const supabase = adminSupabase();
+  const building = await prisma.building.findUnique({
+    where: { id: session.appUser.buildingId },
+    select: { name: true },
+  });
 
   const rows: BulkRowOk[] = [];
   const errors: BulkRowErr[] = [];
@@ -180,14 +206,23 @@ export async function bulkAddResidents(_prev: unknown, formData: FormData): Prom
     }
 
     const password = generatePassword();
-    const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
-    if (signUpError || !data.user?.id) {
-      errors.push({ row: rowNum, email, error: signUpError?.message || "signup returned no user id" });
+    const { data, error: createError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
+    if (createError || !data.user?.id) {
+      errors.push({ row: rowNum, email, error: createError?.message || "createUser returned no user id" });
       continue;
     }
     await prisma.user.create({
       data: { id: data.user.id, email, ...linkData },
     });
+    // Fire welcome email; don't fail the row if it errors (BM still sees the temp password in the response).
+    sendEmail({
+      to: email,
+      ...welcomeEmail({ email, password, buildingName: building?.name ?? null, role }),
+    }).catch((err) => console.error("[bulk-onboard] welcome email failed", email, err));
     rows.push({ row: rowNum, email, password, status: "created" });
     created++;
   }

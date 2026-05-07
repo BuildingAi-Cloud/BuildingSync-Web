@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getOrCreateAppUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendEmailFireAndForget, workOrderStatusChangedEmail } from "@/lib/email";
 
 const PatchBody = z.object({
   status: z.enum(["open", "assigned", "in_progress", "closed"]).optional(),
@@ -32,5 +33,25 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (parsed.data.assignSelf) data.assignedToId = appUser.id;
 
   const updated = await prisma.workOrder.update({ where: { id }, data });
+
+  // Email the opener if status actually changed.
+  if (data.status && data.status !== wo.status) {
+    const [opener, building] = await Promise.all([
+      prisma.user.findUnique({ where: { id: wo.openedById }, select: { email: true, isActive: true } }),
+      prisma.building.findUnique({ where: { id: wo.buildingId }, select: { name: true } }),
+    ]);
+    if (opener?.isActive && opener.email) {
+      sendEmailFireAndForget({
+        to: opener.email,
+        ...workOrderStatusChangedEmail({
+          title: updated.title,
+          oldStatus: wo.status,
+          newStatus: data.status,
+          buildingName: building?.name ?? null,
+        }),
+      });
+    }
+  }
+
   return NextResponse.json({ workOrder: updated });
 }
