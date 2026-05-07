@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePlatformAdmin } from "@/lib/platform";
 import { prisma } from "@/lib/prisma";
+import { Avatar } from "@/components/Avatar";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import type { UserRole } from "@prisma/client";
 
 const STAFF_ROLES: UserRole[] = ["building_manager", "facility_manager", "concierge"];
@@ -37,7 +39,13 @@ export default async function BuildingDetail({ params }: { params: Promise<{ id:
 
   return (
     <main className="px-4 md:px-6 py-8 md:py-10 max-w-6xl mx-auto">
-      <Link href="/platform" className="text-sm text-muted-foreground hover:text-foreground">← Back to platform</Link>
+      <Breadcrumbs
+        items={[
+          { label: "Platform", href: "/platform" },
+          { label: "Buildings", href: "/platform" },
+          { label: building.name },
+        ]}
+      />
 
       <div className="mt-4 space-y-1">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">Building</p>
@@ -151,9 +159,12 @@ function UserRow({
   const unitLabel = user.unitRel?.unitNumber || user.unit;
   return (
     <li className="px-5 py-4 flex items-center justify-between gap-4">
-      <div className="min-w-0">
-        <div className="font-medium truncate">{user.name || user.email}</div>
-        <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+      <div className="flex items-center gap-3 min-w-0">
+        <Avatar name={user.name} email={user.email} />
+        <div className="min-w-0">
+          <div className="font-medium truncate">{user.name || user.email}</div>
+          <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+        </div>
       </div>
       <div className="text-sm flex items-center gap-3 shrink-0">
         {unitLabel && <span className="text-muted-foreground">Unit {unitLabel}</span>}

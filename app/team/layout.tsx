@@ -3,6 +3,7 @@ import { requireTeam } from "@/lib/team";
 import { Wordmark } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { MobileMenu, type MobileNavItem } from "@/components/MobileMenu";
+import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function TeamLayout({ children }: { children: React.ReactNode }) {
   const { authUser, appUser } = await requireTeam();
@@ -29,11 +30,7 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
         <div className="font-medium text-foreground truncate">{authUser.email}</div>
         <div className="mt-0.5 capitalize">{appUser.role.replace("_", " ")}</div>
       </div>
-      <form action="/auth/signout" method="post">
-        <button className="w-full px-3 py-2 rounded-md border border-border hover:bg-muted text-sm transition-colors">
-          Sign out
-        </button>
-      </form>
+      <SignOutButton fullWidth />
     </div>
   );
 
@@ -64,11 +61,9 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
             <span className="hidden lg:inline text-sm text-muted-foreground">
               {authUser.email}
             </span>
-            <form action="/auth/signout" method="post" className="hidden md:block">
-              <button className="px-3 py-1.5 rounded-md border border-border hover:bg-muted transition-colors text-sm">
-                Sign out
-              </button>
-            </form>
+            <div className="hidden md:block">
+              <SignOutButton />
+            </div>
             <MobileMenu items={items} rightSlot={mobileFooter} />
           </div>
         </div>

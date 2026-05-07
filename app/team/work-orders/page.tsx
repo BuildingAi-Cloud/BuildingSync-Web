@@ -1,5 +1,6 @@
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
 import { WorkOrderRow } from "./WorkOrderRow";
 
 export default async function TeamWorkOrdersPage() {
@@ -39,9 +40,13 @@ export default async function TeamWorkOrdersPage() {
       <p className="mt-1 text-sm text-muted-foreground">{workOrders.length} total</p>
 
       {workOrders.length === 0 ? (
-        <p className="mt-10 text-sm text-muted-foreground">
-          No work orders yet. Residents submit them from /dashboard/maintenance.
-        </p>
+        <div className="mt-8">
+          <EmptyState
+            icon="tools"
+            title="No work orders yet"
+            description="Residents submit maintenance requests from their dashboard. They'll show up here as they come in, with email notifications to the team."
+          />
+        </div>
       ) : (
         <ul className="mt-8 space-y-2">
           {workOrders.map((wo) => (

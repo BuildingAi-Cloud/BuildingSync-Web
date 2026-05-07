@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
+import { formatRelative } from "@/lib/format";
 import { MaintenanceForm } from "./MaintenanceForm";
 
 const STATUS_TONE: Record<string, string> = {
@@ -32,7 +34,13 @@ export default async function MaintenancePage() {
       <section className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Your requests</h2>
         {workOrders.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">No requests yet.</p>
+          <div className="mt-3">
+            <EmptyState
+              icon="inbox"
+              title="No requests yet"
+              description="When you submit a request above, it'll show up here with the latest status."
+            />
+          </div>
         ) : (
           <ul className="mt-3 space-y-2">
             {workOrders.map((wo) => (
@@ -45,7 +53,7 @@ export default async function MaintenancePage() {
                 </div>
                 {wo.description && <p className="mt-2 text-sm text-muted-foreground">{wo.description}</p>}
                 <p className="mt-3 text-xs text-muted-foreground/70">
-                  Opened {new Date(wo.createdAt).toLocaleString()}
+                  Opened {formatRelative(wo.createdAt)}
                 </p>
               </li>
             ))}

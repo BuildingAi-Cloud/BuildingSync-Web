@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { Wordmark } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { MobileMenu, type MobileNavItem } from "@/components/MobileMenu";
+import { SignOutButton } from "@/components/SignOutButton";
+import { EmptyState } from "@/components/EmptyState";
+import { formatRelative } from "@/lib/format";
 
 const STAFF_ROLES = ["building_manager", "facility_manager", "concierge"] as const;
 
@@ -55,11 +58,7 @@ export default async function DashboardPage() {
         <div className="font-medium text-foreground truncate">{authUser.email}</div>
         <div className="mt-0.5 capitalize">{appUser.role.replace("_", " ")}</div>
       </div>
-      <form action="/auth/signout" method="post">
-        <button className="w-full px-3 py-2 rounded-md border border-border hover:bg-muted text-sm transition-colors">
-          Sign out
-        </button>
-      </form>
+      <SignOutButton fullWidth />
     </div>
   );
 
@@ -87,11 +86,9 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <span className="hidden lg:inline text-sm text-muted-foreground">{authUser.email}</span>
-            <form action="/auth/signout" method="post" className="hidden md:block">
-              <button className="px-3 py-1.5 rounded-md border border-border hover:bg-muted transition-colors text-sm">
-                Sign out
-              </button>
-            </form>
+            <div className="hidden md:block">
+              <SignOutButton />
+            </div>
             <MobileMenu items={navItems} rightSlot={mobileFooter} />
           </div>
         </div>
@@ -150,7 +147,7 @@ export default async function DashboardPage() {
                   <div className="min-w-0">
                     <div className="font-medium truncate">{wo.issue}</div>
                     <div className="text-xs text-muted-foreground/70 mt-0.5">
-                      {new Date(wo.createdAt).toLocaleDateString()}
+                      {formatRelative(wo.createdAt)}
                     </div>
                   </div>
                   <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm border shrink-0 ${STATUS_TONE[wo.status]}`}>
@@ -178,7 +175,7 @@ export default async function DashboardPage() {
                   <div className="font-medium">{a.title}</div>
                   <div className="text-sm text-muted-foreground mt-1 line-clamp-2">{a.body}</div>
                   <div className="text-xs text-muted-foreground/70 mt-2">
-                    {new Date(a.createdAt).toLocaleDateString()}
+                    {formatRelative(a.createdAt)}
                   </div>
                 </li>
               ))}

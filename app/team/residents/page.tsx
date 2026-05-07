@@ -1,5 +1,7 @@
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
+import { Avatar } from "@/components/Avatar";
 import { AddResidentForm } from "./AddResidentForm";
 import { BulkAddForm } from "./BulkAddForm";
 
@@ -61,15 +63,26 @@ export default async function TeamResidentsPage() {
       <section className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">All residents</h2>
         {residents.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">No residents linked yet.</p>
+          <div className="mt-3">
+            <EmptyState
+              icon="users"
+              title="No residents linked yet"
+              description={canAdd
+                ? "Add a resident above with their email — they'll get a welcome with sign-in instructions."
+                : "Once Building Manager links residents, you'll see them here."}
+            />
+          </div>
         ) : (
           <div className="mt-3 bg-card border border-border rounded-md overflow-hidden">
             <ul className="divide-y divide-border">
               {residents.map((r) => (
                 <li key={r.id} className="px-5 py-4 flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="font-medium truncate">{r.name || r.email}</div>
-                    <div className="text-xs text-muted-foreground truncate">{r.email}</div>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Avatar name={r.name} email={r.email} />
+                    <div className="min-w-0">
+                      <div className="font-medium truncate">{r.name || r.email}</div>
+                      <div className="text-xs text-muted-foreground truncate">{r.email}</div>
+                    </div>
                   </div>
                   <div className="text-sm flex items-center gap-3 shrink-0">
                     {(r.unitRel || r.unit) && (

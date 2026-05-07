@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requirePlatformAdmin } from "@/lib/platform";
 import { prisma } from "@/lib/prisma";
+import { Avatar } from "@/components/Avatar";
 import { updateUser } from "./actions";
 
 const ROLES = [
@@ -53,8 +54,14 @@ export default async function UsersPage() {
               return (
                 <tr key={u.id}>
                   <td className="py-3 px-5 align-top">
-                    <div className="font-medium">{u.email}</div>
-                    {isMe && <div className="text-[10px] uppercase tracking-wider text-accent mt-0.5">that's you</div>}
+                    <div className="flex items-center gap-3">
+                      <Avatar name={u.name} email={u.email} />
+                      <div className="min-w-0">
+                        <div className="font-medium truncate">{u.name || u.email}</div>
+                        {u.name && <div className="text-xs text-muted-foreground truncate">{u.email}</div>}
+                        {isMe && <div className="text-[10px] uppercase tracking-wider text-accent mt-0.5">that&apos;s you</div>}
+                      </div>
+                    </div>
                   </td>
                   <td className="py-3 px-5 align-top">
                     <form action={updateUser} className="flex items-center gap-2">

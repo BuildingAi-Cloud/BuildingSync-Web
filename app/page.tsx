@@ -123,7 +123,7 @@ function Hero({ portalUrl, portalLabel }: { portalUrl: string | null; portalLabe
     <section className="relative max-w-7xl mx-auto px-6 pt-12 md:pt-20 pb-16 md:pb-24">
       <SplitFlapAudioProvider>
         <div className="relative mb-8 md:mb-10">
-          <SplitFlapText text="BUILDSYNC" speed={80} />
+          <SplitFlapText text="BUILDINGSYNC" speed={80} />
           <div className="mt-6 flex justify-start">
             <SplitFlapMuteToggle />
           </div>

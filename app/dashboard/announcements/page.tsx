@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
+import { formatRelative } from "@/lib/format";
 
 export default async function AnnouncementsPage() {
   const { appUser } = await requireUser();
@@ -19,11 +21,21 @@ export default async function AnnouncementsPage() {
       <h1 className="mt-4 text-3xl font-semibold tracking-tight">Announcements</h1>
 
       {!appUser.buildingId ? (
-        <p className="mt-8 text-sm text-muted-foreground">
-          You'll see announcements once a Building Manager assigns you to a building.
-        </p>
+        <div className="mt-8">
+          <EmptyState
+            icon="megaphone"
+            title="No building assigned yet"
+            description="Once your Building Manager links you to a building, their announcements will show up here."
+          />
+        </div>
       ) : announcements.length === 0 ? (
-        <p className="mt-8 text-sm text-muted-foreground">No announcements yet.</p>
+        <div className="mt-8">
+          <EmptyState
+            icon="megaphone"
+            title="No announcements yet"
+            description="Notices from your building team will appear here, and we'll email them too."
+          />
+        </div>
       ) : (
         <ul className="mt-8 space-y-3">
           {announcements.map((a) => (
@@ -31,7 +43,7 @@ export default async function AnnouncementsPage() {
               <h2 className="font-semibold">{a.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap">{a.body}</p>
               <p className="mt-4 text-xs text-muted-foreground/70">
-                {new Date(a.createdAt).toLocaleString()}
+                {formatRelative(a.createdAt)}
               </p>
             </li>
           ))}

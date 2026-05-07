@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
+import { formatRelative } from "@/lib/format";
 import { AnnouncementForm } from "./AnnouncementForm";
 
 export default async function TeamAnnouncementsPage() {
@@ -27,14 +29,20 @@ export default async function TeamAnnouncementsPage() {
       <section className="mt-10">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Posted</h2>
         {announcements.length === 0 ? (
-          <p className="mt-3 text-sm text-muted-foreground">None yet.</p>
+          <div className="mt-3">
+            <EmptyState
+              icon="megaphone"
+              title="No announcements yet"
+              description="Post one above. We'll email every active resident in your building."
+            />
+          </div>
         ) : (
           <ul className="mt-3 space-y-2">
             {announcements.map((a) => (
               <li key={a.id} className="bg-card border border-border rounded-md p-4">
                 <h3 className="font-medium">{a.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground whitespace-pre-wrap">{a.body}</p>
-                <p className="mt-3 text-xs text-muted-foreground/70">{new Date(a.createdAt).toLocaleString()}</p>
+                <p className="mt-3 text-xs text-muted-foreground/70">{formatRelative(a.createdAt)}</p>
               </li>
             ))}
           </ul>

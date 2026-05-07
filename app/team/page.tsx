@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
+import { EmptyState } from "@/components/EmptyState";
+import { formatRelative } from "@/lib/format";
 
 const STATUS_TONE: Record<string, string> = {
   open: "bg-accent/10 text-accent border-accent/30",
@@ -61,16 +63,22 @@ export default async function TeamHome() {
         />
       </div>
 
-      {recentWorkOrders.length > 0 && (
-        <section className="mt-10">
-          <div className="flex items-baseline justify-between mb-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Open work orders
-            </h2>
-            <Link href="/team/work-orders" className="text-xs text-accent hover:underline">
-              View all
-            </Link>
-          </div>
+      <section className="mt-10">
+        <div className="flex items-baseline justify-between mb-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Open work orders
+          </h2>
+          <Link href="/team/work-orders" className="text-xs text-accent hover:underline">
+            View all
+          </Link>
+        </div>
+        {recentWorkOrders.length === 0 ? (
+          <EmptyState
+            icon="tools"
+            title="No open work orders"
+            description="When residents submit a maintenance request you'll see it here."
+          />
+        ) : (
           <ul className="space-y-2">
             {recentWorkOrders.map((wo) => (
               <li key={wo.id} className="bg-card border border-border rounded-md px-4 py-3">
@@ -83,7 +91,7 @@ export default async function TeamHome() {
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground/70 mt-1">
-                      Opened by {wo.openedBy ? (wo.openedBy.name || wo.openedBy.email) : "—"} · {new Date(wo.createdAt).toLocaleDateString()}
+                      Opened by {wo.openedBy ? (wo.openedBy.name || wo.openedBy.email) : "—"} · {formatRelative(wo.createdAt)}
                     </div>
                   </div>
                   <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-sm border shrink-0 ${STATUS_TONE[wo.status]}`}>
@@ -93,8 +101,8 @@ export default async function TeamHome() {
               </li>
             ))}
           </ul>
-        </section>
-      )}
+        )}
+      </section>
     </main>
   );
 }
