@@ -64,7 +64,7 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
 
   return (
     <>
-      <SiteHeader portalUrl={portalUrl} portalLabel={portalLabel} />
+      <SiteHeader />
       <main className="pt-16 md:pt-20">
         <Hero portalUrl={portalUrl} portalLabel={portalLabel} />
         <Pathways />
@@ -79,7 +79,10 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
   );
 }
 
-function SiteHeader({ portalUrl, portalLabel }: { portalUrl: string | null; portalLabel: string }) {
+function SiteHeader() {
+  // Header is intentionally public — no auth-aware reveal. Signed-in
+  // visitors keep the friendly marketing surface and get their portal
+  // CTA from the Hero ("Open dashboard / team / admin").
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/85 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-4">
@@ -97,29 +100,18 @@ function SiteHeader({ portalUrl, portalLabel }: { portalUrl: string | null; port
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {portalUrl ? (
-            <Link
-              href={portalUrl}
-              className="inline-flex items-center px-3 md:px-4 py-1.5 rounded-md bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              {portalLabel}
-            </Link>
-          ) : (
-            <>
-              <Link
-                href="/signin"
-                className="hidden sm:inline-flex items-center px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/signup"
-                className="inline-flex items-center px-3 md:px-4 py-1.5 rounded-md bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
-              >
-                Get started
-              </Link>
-            </>
-          )}
+          <Link
+            href="/signin"
+            className="inline-flex items-center px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="hidden sm:inline-flex items-center px-3 md:px-4 py-1.5 rounded-md bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            Get started
+          </Link>
         </div>
       </div>
     </header>
