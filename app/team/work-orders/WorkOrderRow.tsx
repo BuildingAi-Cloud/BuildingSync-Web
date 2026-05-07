@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 type Props = {
   workOrder: {
@@ -41,7 +42,10 @@ export function WorkOrderRow({ workOrder, canAct }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const next = NEXT_STATUS[workOrder.status];
+  const showAction = canAct && next;
+  const isLong = workOrder.description.length > 180;
 
   async function advance() {
     if (!next) return;
@@ -53,15 +57,21 @@ export function WorkOrderRow({ workOrder, canAct }: Props) {
     });
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      setError(body.error || "Failed");
+      setError(body.error || "Failed to update.");
       return;
     }
     startTransition(() => router.refresh());
   }
 
   return (
-    <li className="bg-card border border-border rounded-md p-4">
-      <div className="flex items-start justify-between gap-4">
+    <motion.li
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="bg-card border border-border rounded-md p-4"
+    >
+      <div className="flex items-start gap-3 flex-wrap">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium">{workOrder.title}</span>
@@ -72,23 +82,48 @@ export function WorkOrderRow({ workOrder, canAct }: Props) {
               <span className="text-xs text-muted-foreground">Unit {workOrder.unitLabel}</span>
             )}
           </div>
-          <p className="mt-2 text-sm text-muted-foreground">{workOrder.description}</p>
+          <p
+            className={`mt-2 text-sm text-muted-foreground whitespace-pre-wrap ${
+              !expanded && isLong ? "line-clamp-3" : ""
+            }`}
+          >
+            {workOrder.description}
+          </p>
+          {isLong && (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              className="mt-1 text-xs text-accent hover:underline"
+            >
+              {expanded ? "Show less" : "Show more"}
+            </button>
+          )}
           <p className="mt-3 text-xs text-muted-foreground/70">
             Opened {new Date(workOrder.createdAt).toLocaleString()} by {workOrder.openedByLabel}
             {workOrder.assignedToLabel ? ` · Assigned to ${workOrder.assignedToLabel}` : ""}
           </p>
-          {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+          {error && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-2 text-xs text-red-600 dark:text-red-400"
+              role="alert"
+            >
+              {error}
+            </motion.p>
+          )}
         </div>
-        {canAct && next && (
+        {showAction && (
           <button
+            type="button"
             onClick={advance}
             disabled={pending}
-            className="text-sm px-3 py-1.5 rounded-md font-medium bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 shrink-0"
+            className="w-full sm:w-auto text-sm px-4 py-2 rounded-md font-semibold bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-60 shrink-0"
           >
             {pending ? "…" : NEXT_LABEL[workOrder.status]}
           </button>
         )}
       </div>
-    </li>
+    </motion.li>
   );
 }
