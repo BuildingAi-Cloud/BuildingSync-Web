@@ -5,6 +5,7 @@ import { PwaInstallPrompt } from "@/components/PwaInstallPrompt";
 import { BetaBanner } from "@/components/BetaBanner";
 import { ToastProvider } from "@/components/ToastProvider";
 import { MotionConfigProvider } from "@/components/MotionConfig";
+import { CookieBanner } from "@/components/CookieBanner";
 import "./globals.css";
 
 const ibmPlexSans = IBM_Plex_Sans({
@@ -75,6 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider />
         <RegisterServiceWorker />
         <PwaInstallPrompt />
+        <CookieBanner />
       </body>
     </html>
   );

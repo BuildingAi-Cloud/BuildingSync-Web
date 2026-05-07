@@ -26,18 +26,23 @@ export default async function DashboardPage() {
   // Resident dashboard is for residents/tenants only. Staff land on /team.
   if ((STAFF_ROLES as readonly string[]).includes(appUser.role)) redirect("/team");
 
+  // Each query is .catch'd individually — one failed read shouldn't
+  // crash the dashboard. Surfaces empty state for that section instead.
   const [building, unit, recentWorkOrders, recentAnnouncements, notifications] = await Promise.all([
     appUser.buildingId
-      ? prisma.building.findUnique({ where: { id: appUser.buildingId } })
+      ? prisma.building.findUnique({ where: { id: appUser.buildingId } }).catch(() => null)
       : Promise.resolve(null),
     appUser.unitId
-      ? prisma.unit.findUnique({ where: { id: appUser.unitId } })
+      ? prisma.unit.findUnique({ where: { id: appUser.unitId } }).catch(() => null)
       : Promise.resolve(null),
     prisma.workOrder.findMany({
       where: { openedById: appUser.id },
       orderBy: { createdAt: "desc" },
       take: 3,
       select: { id: true, issue: true, status: true, createdAt: true },
+    }).catch((err) => {
+      console.error("[dashboard] workOrder.findMany failed", err);
+      return [];
     }),
     appUser.buildingId
       ? prisma.announcement.findMany({
@@ -45,9 +50,15 @@ export default async function DashboardPage() {
           orderBy: { createdAt: "desc" },
           take: 2,
           select: { id: true, title: true, body: true, createdAt: true },
+        }).catch((err) => {
+          console.error("[dashboard] announcement.findMany failed", err);
+          return [];
         })
       : Promise.resolve([]),
-    getNotifications({ id: appUser.id, role: appUser.role, buildingId: appUser.buildingId }),
+    getNotifications({ id: appUser.id, role: appUser.role, buildingId: appUser.buildingId }).catch((err) => {
+      console.error("[dashboard] getNotifications failed", err);
+      return [];
+    }),
   ]);
 
   const navItems: MobileNavItem[] = [

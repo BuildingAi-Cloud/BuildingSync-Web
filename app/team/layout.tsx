@@ -13,6 +13,10 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
     id: appUser.id,
     role: appUser.role,
     buildingId: appUser.buildingId,
+  }).catch((err) => {
+    // Don't 500 the whole layout if the activity feed query fails.
+    console.error("[team/layout] getNotifications failed", err);
+    return [];
   });
 
   // Build the role-gated nav once and feed it to both desktop nav + mobile drawer.

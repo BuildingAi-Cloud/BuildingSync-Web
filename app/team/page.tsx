@@ -17,19 +17,21 @@ const ACTIVE_STATUSES = ["open", "in_progress", "scheduled"] as const;
 export default async function TeamHome() {
   const { appUser } = await requireTeam();
 
+  // Each query .catch'd individually — one failure shouldn't 500 the page.
   const [building, openCount, residentCount, announcementCount, recentWorkOrders] = appUser.buildingId
     ? await Promise.all([
-        prisma.building.findUnique({ where: { id: appUser.buildingId } }),
-        prisma.workOrder.count({ where: { buildingId: appUser.buildingId, status: { in: [...ACTIVE_STATUSES] } } }),
-        prisma.user.count({ where: { buildingId: appUser.buildingId, role: { in: ["resident", "tenant"] } } }),
-        prisma.announcement.count({ where: { buildingId: appUser.buildingId, deletedAt: null } }),
+        prisma.building.findUnique({ where: { id: appUser.buildingId } }).catch(() => null),
+        prisma.workOrder.count({ where: { buildingId: appUser.buildingId, status: { in: [...ACTIVE_STATUSES] } } }).catch(() => 0),
+        prisma.user.count({ where: { buildingId: appUser.buildingId, role: { in: ["resident", "tenant"] } } }).catch(() => 0),
+        prisma.announcement.count({ where: { buildingId: appUser.buildingId, deletedAt: null } }).catch(() => 0),
         prisma.workOrder.findMany({
           where: { buildingId: appUser.buildingId, status: { in: [...ACTIVE_STATUSES] } },
           orderBy: [{ status: "asc" }, { createdAt: "desc" }],
           take: 4,
-          include: {
-            openedBy: { select: { name: true, email: true } },
-          },
+          include: { openedBy: { select: { name: true, email: true } } },
+        }).catch((err) => {
+          console.error("[team] recent workOrders failed", err);
+          return [];
         }),
       ])
     : [null, 0, 0, 0, []];
