@@ -7,13 +7,14 @@ import { NotificationBell } from "@/components/NotificationBell";
 import { AccountMenu } from "@/components/AccountMenu";
 import { roleLabel } from "@/components/RoleBadge";
 import type { NotificationItem } from "@/components/NotificationBell";
+import { getLocale } from "@/lib/locale-server";
 
 // Unified post-login chrome. Replaces three near-identical headers that had
 // drifted (different z-index, /platform missing the mobile menu entirely,
 // inconsistent sign-out patterns). One shell, three portals feed it the
 // nav items + role appropriate to their surface.
 
-export function PortalShell({
+export async function PortalShell({
   portalLabel,
   portalHome,
   navItems,
@@ -55,6 +56,11 @@ export function PortalShell({
   // Falls back to "/dashboard/account" for portals without a custom account page.
   const accountHref = `${portalHome === "/" ? "/dashboard" : portalHome}/account`;
 
+  // Read the user's preferred locale (cookie-backed). Set <html lang> +
+  // dir downstream once we add real i18n strings; for R1 we only surface
+  // the switcher.
+  const locale = await getLocale();
+
   return (
     <div className="min-h-dvh">
       <header className="border-b border-border bg-card/40 backdrop-blur sticky top-0 z-40">
@@ -88,6 +94,7 @@ export function PortalShell({
               role={userRole}
               portalHome={portalHome}
               accountHref={accountHref}
+              locale={locale}
             />
             <MobileMenu items={navItems} rightSlot={mobileFooter} />
           </div>

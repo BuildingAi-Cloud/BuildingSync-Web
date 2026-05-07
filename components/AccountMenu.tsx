@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Avatar } from "@/components/Avatar";
 import { roleLabel } from "@/components/RoleBadge";
 import { useConfirm } from "@/components/ConfirmDialog";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import type { LocaleCode } from "@/lib/locale";
 
 // Avatar-triggered account dropdown. Replaces the previous inline
 // email + role-badge + sign-out cluster in the header that was crowding
@@ -28,12 +30,14 @@ export function AccountMenu({
   role,
   portalHome,
   accountHref,
+  locale,
 }: {
   name?: string | null;
   email: string;
   role: string;
   portalHome: string;
   accountHref: string;
+  locale: LocaleCode;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -163,6 +167,10 @@ export function AccountMenu({
                 </li>
               ))}
             </ul>
+
+            <div className="border-t border-border py-1.5">
+              <LocaleSwitcher current={locale} variant="row" />
+            </div>
 
             <div className="border-t border-border py-1.5">
               <form ref={formRef} action="/auth/signout" method="post">
