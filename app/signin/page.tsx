@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -24,7 +24,6 @@ export default function SignInPage() {
 }
 
 function SignInPageInner() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
@@ -86,12 +85,12 @@ function SignInPageInner() {
       );
       return;
     }
-    if (dest.startsWith("http")) {
-      window.location.href = dest;
-    } else {
-      router.push(dest);
-      router.refresh();
-    }
+    // Hard navigation in all cases. router.push/refresh can race with the
+    // freshly-set Supabase auth cookies, leaving the destination route
+    // rendered without the new session and bouncing back to /signin.
+    // window.location.href forces a full reload, guaranteeing every
+    // subsequent request carries the cookies.
+    window.location.href = dest;
   }
 
   async function onReset(e: React.FormEvent) {
