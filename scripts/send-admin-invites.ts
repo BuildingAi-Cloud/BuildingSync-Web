@@ -15,7 +15,6 @@ config({ path: ".env.local" });
 // Dynamic-imported below so dotenv has run before lib/email reads
 // process.env.RESEND_API_KEY at module load.
 
-const APP_URL = process.env.APP_BASE_URL || "https://buildingsync.app";
 const ADMIN_URL = "https://admin.buildingsync.app";
 // Required env var; never hardcode the value — it ends up in the recipient
 // emails verbatim and any leak in git history triggers secret scanners.
