@@ -4,13 +4,16 @@ import { updateSession } from "@/utils/supabase/middleware";
 const ADMIN_HOST = process.env.ADMIN_HOST || "admin.buildingsync.app";
 
 // Paths that must NOT be prefixed with /platform on the admin host —
-// shared auth flows, API routes, public assets, and anything already
-// addressed under /platform.
+// shared auth flows, public legal/help pages, API routes, public
+// assets, and anything already addressed under /platform.
 const PASS_THROUGH_PREFIXES = [
   "/signin",
   "/signup",
   "/auth",
   "/offline",
+  "/privacy",
+  "/terms",
+  "/docs",
   "/api",
   "/_next",
   "/platform",
