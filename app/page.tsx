@@ -150,6 +150,9 @@ function Hero({ portalUrl, portalLabel }: { portalUrl: string | null; portalLabe
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full border border-accent/40 bg-accent/10 text-xs font-mono uppercase tracking-widest text-accent">
+          MVP · pilots open
+        </span>
         {["Self-serve onboarding", "Cancel anytime", "Privacy-first by design"].map((proof) => (
           <span
             key={proof}
@@ -172,7 +175,7 @@ function Hero({ portalUrl, portalLabel }: { portalUrl: string | null; portalLabe
       </div>
 
       <p className="mt-6 text-xs text-muted-foreground">
-        Essential plan from $2.50 / unit / month. No credit card to explore.
+        Essential plan from $2.50 / unit / month. No credit card to explore. Everything before R3 is MVP — native iOS + Android apps ship with R3.
       </p>
     </section>
   );
@@ -262,8 +265,8 @@ const PRINCIPLES = [
   {
     number: "04",
     title: "Mobile-first",
-    summary: "Installable PWA today; native iOS and Android on the roadmap.",
-    points: ["Install from Safari or Chrome to home screen", "Offline shell + brand-mark home tile"],
+    summary: "Installable PWA today; native iOS and Android ship at R3.",
+    points: ["Install from Safari or Chrome to home screen", "Push notifications, offline shell, brand-mark home tile", "Everything before R3 is MVP — features may evolve as customers shape it"],
   },
 ];
 
@@ -455,7 +458,11 @@ const FAQS = [
   },
   {
     q: "Do you have an iOS or Android app?",
-    a: "BuildingSync is an installable PWA (Progressive Web App) — residents and staff install it from Safari or Chrome to their home screen and get a native-feeling experience today, including the brand-mark home tile and an offline page. Dedicated iOS and Android apps are on the roadmap.",
+    a: "Today, BuildingSync ships as an installable PWA (Progressive Web App). Residents and staff add it from Safari or Chrome to their home screen and get push notifications, an offline shell, and a brand-mark home tile — no app-store wait. Dedicated iOS and Android apps ship with R3. Everything before R3 is MVP and shaped by early-customer feedback.",
+  },
+  {
+    q: "What does \"MVP\" mean here?",
+    a: "BuildingSync is in MVP through R1 and R2. The core flows (announcements, maintenance, deliveries, push notifications, audit log, settings) are live and used in real buildings, but copy, layouts, and secondary features may evolve as we learn from pilot customers. Native iOS + Android apps land at R3 alongside the production billing portal. Pricing locks at R3.",
   },
   {
     q: "Is my building's data shared with other customers?",

@@ -17,11 +17,11 @@ type Highlight = {
 const HIGHLIGHTS: Highlight[] = [
   {
     status: "live",
-    badge: "Live in R1",
+    badge: "MVP · PWA today",
     title: "Mobile Resident App",
-    note: "Submit maintenance requests, read announcements, and manage your account from anywhere.",
-    detail: "Installable PWA — residents and staff add BuildingSync to their home screen from Safari or Chrome. Works offline for the shell, native-feeling navigation, brand-mark home tile.",
-    points: ["Maintenance request tracking", "Announcement broadcast", "Profile + password self-service"],
+    note: "Submit maintenance requests, read announcements, and manage your account from anywhere — installable from your phone today, no app store wait.",
+    detail: "Installable PWA — residents and staff add BuildingSync to their home screen from Safari or Chrome. Push notifications, offline shell, brand-mark home tile. Native iOS + Android apps ship at R3.",
+    points: ["Maintenance request tracking", "Push notifications (announcements, deliveries, work orders)", "Native iOS + Android apps ship at R3"],
   },
   {
     status: "roadmap",

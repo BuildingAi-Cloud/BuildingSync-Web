@@ -20,7 +20,7 @@ export function BetaBanner() {
         {/* Compact one-liner on mobile so it doesn't eat 3 rows of vertical
             real estate; expanded copy from sm: up. */}
         <p className="leading-snug sm:hidden">
-          <strong className="font-semibold">Beta.</strong>{" "}
+          <strong className="font-semibold">MVP.</strong>{" "}
           <a
             href="mailto:info@buildingsync.app"
             className="underline underline-offset-2 hover:opacity-80 opacity-90"
@@ -29,9 +29,9 @@ export function BetaBanner() {
           </a>
         </p>
         <p className="leading-snug hidden sm:block">
-          <strong className="font-semibold">Early testing.</strong>{" "}
+          <strong className="font-semibold">MVP — pilot phase.</strong>{" "}
           <span className="opacity-90">
-            BuildingSync is under active development — features may change or break. Not yet a live production service. Feedback:{" "}
+            Everything before R3 is shaped by early customers — features may change. Native iOS and Android apps ship with R3. Feedback:{" "}
             <a
               href="mailto:info@buildingsync.app"
               className="underline underline-offset-2 hover:opacity-80"
