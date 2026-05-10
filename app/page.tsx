@@ -608,6 +608,10 @@ function SiteFooter() {
           <ul className="mt-3 space-y-2 font-mono text-xs text-muted-foreground">
             <li><Link href="/signin" className="hover:text-foreground transition-colors">Sign in</Link></li>
             <li><Link href="/signup" className="hover:text-foreground transition-colors">Sign up</Link></li>
+            <li><Link href="/walkthrough" className="hover:text-foreground transition-colors">Book a walkthrough</Link></li>
+            <li><Link href="/for-property-managers" className="hover:text-foreground transition-colors">For property managers</Link></li>
+            <li><Link href="/about" className="hover:text-foreground transition-colors">About + founder</Link></li>
+            <li><Link href="/press" className="hover:text-foreground transition-colors">Press kit</Link></li>
           </ul>
         </div>
       </div>
