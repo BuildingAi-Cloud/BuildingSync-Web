@@ -1,6 +1,7 @@
 import { requireTeam } from "@/lib/team";
 import { prisma } from "@/lib/prisma";
 import { AddUnitForm } from "./AddUnitForm";
+import { BulkAddUnitsForm } from "./BulkAddUnitsForm";
 
 const CAN_MANAGE = ["building_manager", "facility_manager"];
 
@@ -35,11 +36,20 @@ export default async function TeamUnitsPage() {
       </p>
 
       {canManage && (
-        <section className="mt-8 bg-card border border-border rounded-md p-5">
-          <h2 className="text-base font-semibold">Add a unit</h2>
-          <p className="mt-1 text-xs text-muted-foreground">Floor and rent are optional.</p>
-          <AddUnitForm />
-        </section>
+        <div className="mt-8 grid lg:grid-cols-2 gap-3">
+          <section className="bg-card border border-border rounded-md p-5">
+            <h2 className="text-base font-semibold">Add a unit</h2>
+            <p className="mt-1 text-xs text-muted-foreground">Floor and rent are optional.</p>
+            <AddUnitForm />
+          </section>
+          <section className="bg-card border border-border rounded-md p-5">
+            <h2 className="text-base font-semibold">Bulk import via CSV</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Paste or upload a list of units to import in one shot.
+            </p>
+            <BulkAddUnitsForm />
+          </section>
+        </div>
       )}
 
       <section className="mt-10">

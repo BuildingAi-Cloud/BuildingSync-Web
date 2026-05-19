@@ -62,7 +62,7 @@ Post-signin landing is resolved server-side by [app/signin/actions.ts](app/signi
 
 ### Database / Prisma schema
 
-**The Postgres DB is shared with the R&D project (`super-octo-rotary-phone`)** and contains many tables Website-Beta does not model. [prisma/schema.prisma](prisma/schema.prisma) is intentionally narrower than the live DB — see the file's top comment for the list of unmodeled tables (Amenity*, Notification*, governance_*, vendor_*, etc.). Some columns on modeled tables (e.g. `User.accessRoles UserRole[]`, `Building.amenities String[]`, `Unit.amenities String[]`) exist as nullable arrays in the DB but are **deliberately unmodeled** because Prisma can't represent a nullable scalar array.
+**The Postgres DB is shared with the R&D project (`BuildingSync-Lab`)** and contains many tables BuildingSync-Web does not model. [prisma/schema.prisma](prisma/schema.prisma) is intentionally narrower than the live DB — see the file's top comment for the list of unmodeled tables (Amenity*, Notification*, governance_*, vendor_*, etc.). Some columns on modeled tables (e.g. `User.accessRoles UserRole[]`, `Building.amenities String[]`, `Unit.amenities String[]`) exist as nullable arrays in the DB but are **deliberately unmodeled** because Prisma can't represent a nullable scalar array.
 
 Consequences:
 - Don't `prisma db push` or run a destructive migration thinking the DB is wider than the schema "should" be — that's expected.
@@ -89,4 +89,4 @@ App is installable. [app/manifest.ts](app/manifest.ts) emits the manifest; servi
 
 ## Repo relationship to R&D
 
-This is the **R1 production cut**. Phased / experimental work happens in `BuildingAi-Cloud/super-octo-rotary-phone`. The flow is **port forward only — don't bidirectional merge**. R1 features (resident sign-in, maintenance, announcements, BM/FM/concierge admin, Stripe Checkout, PWA install) are in scope here. AI chat, governance, vendor portal, owner banks, OCR, marketplace, audit-log UI, i18n, Stripe Connect are explicitly **out of R1** — if you find yourself wiring those, you've drifted.
+This is the **R1 production cut** of the `BuildingSync-Web` repo (was `Website-Beta`). Phased / experimental work happens in `BuildingAi-Cloud/BuildingSync-Lab` (was `super-octo-rotary-phone`). The flow is **port forward only — don't bidirectional merge**. R1 features (resident sign-in, maintenance, announcements, BM/FM/concierge admin, Stripe Checkout, PWA install) are in scope here. AI chat, governance, vendor portal, owner banks, OCR, marketplace, audit-log UI, i18n, Stripe Connect are explicitly **out of R1** — if you find yourself wiring those, you've drifted.

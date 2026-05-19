@@ -1,6 +1,6 @@
 # @buildingsync/core
 
-Shared domain code consumed by **both** the cloud app (Website-Beta)
+Shared domain code consumed by **both** the cloud app (BuildingSync-Web)
 and the on-prem app (BuildingSync-Onprem). Lives in this repo
 because that's where features land first; vendored or published into
 the on-prem repo on release.
@@ -73,6 +73,6 @@ keep working, typecheck, commit.
 ## Publishing
 
 Not published to a registry yet. The on-prem repo will pin a commit
-SHA via `"@buildingsync/core": "github:BuildingAi-Cloud/Website-Beta#<sha>:packages/core"`
+SHA via `"@buildingsync/core": "github:BuildingAi-Cloud/BuildingSync-Web#<sha>:packages/core"`
 during early development, then switch to a private npm registry
 (GitHub Packages or Verdaccio) once the API stabilises.

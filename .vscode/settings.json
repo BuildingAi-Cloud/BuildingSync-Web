@@ -1,5 +1,5 @@
 {
-  "liveServer.settings.multiRootWorkspaceName": "Website-Beta",
+  "liveServer.settings.multiRootWorkspaceName": "BuildingSync-Web",
 
   "// vscode-edge-devtools": "Disable inline-style + webhint nags. The rule targets vanilla HTML — inline style props are idiomatic in React/Next, and our planned CSP uses style-src 'self' 'unsafe-inline' (industry standard for React) which makes the warning moot.",
   "vscode-edge-devtools.webhint": false,

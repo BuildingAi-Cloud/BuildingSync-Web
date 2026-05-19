@@ -1,8 +1,8 @@
-# BuildingSync — R1 (Website-Beta)
+# BuildingSync — Web (R1 production)
 
-Production launch repo. Next.js 16 + Supabase + Prisma + Stripe Checkout, deployed on Vercel.
+Cloud SKU. Next.js 16 + Supabase + Prisma + Stripe Checkout, deployed on Vercel.
 
-> R&D and phased development happens in `BuildingAi-Cloud/super-octo-rotary-phone`. This repo is the narrow production cut. Port forward; don't bidirectional-merge.
+> R&D and phased development happens in `BuildingAi-Cloud/BuildingSync-Lab`. This repo is the narrow production cut. Port forward; don't bidirectional-merge. The on-prem SKU lives at `BuildingAi-Cloud/BuildingSync-Onprem` (private).
 
 ## Stack
 
