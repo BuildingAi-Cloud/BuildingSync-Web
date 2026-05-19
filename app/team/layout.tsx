@@ -2,6 +2,7 @@ import { requireTeam } from "@/lib/team";
 import { PortalShell } from "@/components/PortalShell";
 import type { NavSection, MobileNavItem } from "@/components/MobileMenu";
 import { getNotifications } from "@/lib/notifications";
+import { ReverificationBanner } from "@/components/ReverificationBanner";
 
 export default async function TeamLayout({ children }: { children: React.ReactNode }) {
   const { authUser, appUser } = await requireTeam();
@@ -63,6 +64,18 @@ export default async function TeamLayout({ children }: { children: React.ReactNo
       userRole={appUser.role}
       notifications={notifications}
     >
+      {/* BM-only re-verification banner. Self-hides until the next
+          review is within 60 days, so non-BM staff and freshly-
+          verified BMs see nothing. */}
+      {isBM && (
+        <div className="px-4 md:px-6 pt-4 max-w-7xl mx-auto">
+          <ReverificationBanner
+            nextDueAt={appUser.nextVerificationDue}
+            companyName={appUser.company}
+            email={authUser.email!}
+          />
+        </div>
+      )}
       {children}
     </PortalShell>
   );
