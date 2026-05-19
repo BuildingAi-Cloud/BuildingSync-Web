@@ -3,14 +3,18 @@ import type { Metadata } from "next";
 import { AuthShell } from "@/components/AuthShell";
 import { getRegion, PLANNED_REGIONS } from "@/lib/regions";
 import type { Law, NoticeTemplate, Region } from "@/lib/regions/types";
+import { getOrCreateAppUser } from "@/lib/auth";
 
 // Region-aware legal & compliance summary. Single page that surfaces
 // every law that applies in the current jurisdiction, BuildingSync's
 // posture for each, plus the statutory notices we can generate.
 //
-// Today: Ontario only (DEFAULT_REGION_CODE). The architecture
-// (lib/regions/) leaves room to swap in other jurisdictions per
-// building / customer / user setting. R2 work to wire that swap.
+// Region resolution order:
+//   1. ?region= query string (explicit override — for sharing links)
+//   2. signed-in user's User.region (set at signup)
+//   3. DEFAULT_REGION_CODE ("CA-ON")
+//
+// Anonymous visitors who haven't picked a region get Ontario.
 
 export const metadata: Metadata = {
   title: "Legal & Compliance — BuildingSync",
@@ -24,7 +28,17 @@ export default async function LegalPage({
   searchParams?: Promise<{ region?: string }>;
 }) {
   const params = (await searchParams) || {};
-  const region = getRegion(params.region);
+  // Try the signed-in user's region first (silent — anonymous visitors
+  // don't trigger a redirect). Query string wins over user record so a
+  // BM can share a /legal?region=CA-QC link with a Québec colleague
+  // and get Québec content, regardless of which region the recipient
+  // signed up under.
+  let resolvedCode = params.region;
+  if (!resolvedCode) {
+    const session = await getOrCreateAppUser().catch(() => null);
+    if (session?.appUser.region) resolvedCode = session.appUser.region;
+  }
+  const region = getRegion(resolvedCode);
 
   return (
     <AuthShell back={{ href: "/", label: "Home" }} width="wide">

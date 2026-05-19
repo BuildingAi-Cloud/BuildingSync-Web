@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import type { User as AppUser } from "@prisma/client";
 import { findBuildingByInviteCode, normalizeInviteCode } from "@/lib/invite-code";
 import { logAuditFireAndForget } from "@/lib/audit";
+import { validatePostalAgainstBuilding } from "@/lib/postal";
 
 // Reads the Supabase session, then upserts the app-side User row keyed by
 // the Supabase auth.uid. New signups land here as `resident` with no
@@ -70,6 +71,39 @@ export async function getOrCreateAppUser(): Promise<{ authUser: AuthUser; appUse
           resourceId: appUser.id,
           changes: { code },
         });
+
+        // Soft FSA cross-check: compare resident's signup postal
+        // against the building's postal code. Mismatch is logged
+        // for the BM to review — never blocks signup (the resident
+        // may have just moved, or be subletting, or live nearby
+        // but the building entry has an off-by-FSA postcode).
+        if (appUser.postalCode) {
+          const buildingForCheck = await prisma.building.findUnique({
+            where: { id: building.id },
+            select: { zipCode: true },
+          }).catch(() => null);
+          if (buildingForCheck?.zipCode) {
+            const issue = validatePostalAgainstBuilding(
+              appUser.postalCode,
+              buildingForCheck.zipCode,
+            );
+            if (issue) {
+              logAuditFireAndForget({
+                userId: appUser.id,
+                userEmail: appUser.email,
+                buildingId: building.id,
+                action: "invite_code.fsa_mismatch",
+                resource: "User",
+                resourceId: appUser.id,
+                changes: {
+                  residentPostal: appUser.postalCode,
+                  buildingPostal: buildingForCheck.zipCode,
+                  reason: issue.message,
+                },
+              });
+            }
+          }
+        }
       }
     }
     await supabase.auth.updateUser({ data: { invite_code: null } }).catch(() => {});
