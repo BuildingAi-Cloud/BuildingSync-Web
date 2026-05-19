@@ -13,6 +13,7 @@ const PASS_THROUGH_PREFIXES = [
   "/offline",
   "/privacy",
   "/terms",
+  "/legal",
   "/docs",
   "/developers",
   "/api",
