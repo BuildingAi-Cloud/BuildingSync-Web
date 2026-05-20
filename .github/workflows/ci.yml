@@ -23,10 +23,10 @@ jobs:
         run: npm install --no-audit --no-fund
 
       # Bundles prisma generate + tsc --noEmit. Devs run `npm run verify` before
-      # pushing; CI runs the same. ESLint is currently disabled in CI — there's
-      # a known config-load error in eslint-config-next@16 + FlatCompat + ESLint
-      # 9.39 (circular ref in config validator). Re-enable once eslint.config.mjs
-      # is migrated to native flat config.
+      # pushing; CI runs the same. ESLint is intentionally not in this job —
+      # the config now loads cleanly (eslint-config-next's native flat config,
+      # no FlatCompat) but the codebase has a backlog of react-hooks rule
+      # violations to clean up before lint can gate merges.
       - name: Verify
         run: npm run verify
 

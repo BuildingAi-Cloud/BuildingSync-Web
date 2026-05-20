@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { AuthShell } from "@/components/AuthShell";
+import { MotionReveal, MotionRevealStagger, MotionRevealItem } from "@/components/MotionReveal";
 
 // Public stance on integrations. Designed to serve two audiences on
 // one page:
@@ -77,8 +78,8 @@ export default function IntegrationsPage() {
         </p>
 
         {/* ─── The headline stance ────────────────────────── */}
-        <section className="mt-10 grid md:grid-cols-2 gap-4">
-          <div className="bg-card border border-border rounded-2xl p-6">
+        <MotionRevealStagger as="section" stagger={0.1} className="mt-10 grid md:grid-cols-2 gap-4">
+          <MotionRevealItem className="bg-card border border-border rounded-2xl p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">For customers</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight">
               &ldquo;Does it work with X?&rdquo;
@@ -96,8 +97,8 @@ export default function IntegrationsPage() {
             >
               Tell us what to integrate →
             </a>
-          </div>
-          <div className="bg-card border border-border rounded-2xl p-6">
+          </MotionRevealItem>
+          <MotionRevealItem className="bg-card border border-border rounded-2xl p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">For vendors</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight">
               &ldquo;Can we connect to BuildingSync?&rdquo;
@@ -114,8 +115,8 @@ export default function IntegrationsPage() {
             >
               Start a vendor conversation →
             </a>
-          </div>
-        </section>
+          </MotionRevealItem>
+        </MotionRevealStagger>
 
         {/* ─── Common categories ──────────────────────────── */}
         <section className="mt-14">
@@ -127,17 +128,21 @@ export default function IntegrationsPage() {
             also have an account with the vendor; others work with just
             the vendor&apos;s public API.
           </p>
-          <div className="mt-6 grid sm:grid-cols-2 gap-3">
+          <MotionRevealStagger className="mt-6 grid sm:grid-cols-2 gap-3" stagger={0.06}>
             {CATEGORIES.map((c) => (
-              <article key={c.title} className="bg-card border border-border rounded-lg p-5">
+              <MotionRevealItem
+                key={c.title}
+                as="article"
+                className="bg-card border border-border rounded-lg p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:border-accent/40"
+              >
                 <h3 className="font-semibold text-foreground" dangerouslySetInnerHTML={{ __html: c.title }} />
                 <p className="mt-1.5 text-xs text-muted-foreground">{c.blurb}</p>
                 <p className="mt-3 text-xs font-mono text-foreground/80 leading-relaxed">
                   {c.examples.join(" · ")}
                 </p>
-              </article>
+              </MotionRevealItem>
             ))}
-          </div>
+          </MotionRevealStagger>
         </section>
 
         {/* ─── How it works under the hood ────────────────── */}

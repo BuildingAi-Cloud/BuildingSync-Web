@@ -127,6 +127,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    min-height: 100vh;       /* fallback for browsers without dvh (pre-iOS 15.4 / Chrome 108) */
     min-height: 100dvh;
   }
   :where(h1, h2, h3, h4, h5, h6) {
@@ -167,6 +168,18 @@ html[data-motion="reduce"] *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
+}
+
+/* Subtle card hover lift. Use on any element — applies a 2px
+   translate + accent-coloured border on hover. CSS-only (no
+   framer-motion bundle hit on every card); reduced-motion users
+   get only the border change (transition stripped above). */
+.card-lift {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease;
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
 }
 
 html[data-underline="always"] a { text-decoration: underline; }

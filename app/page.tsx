@@ -8,6 +8,7 @@ import { LinkButton, Wordmark } from "@/components/ui";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SplitFlapText, SplitFlapAudioProvider, SplitFlapMuteToggle } from "@/components/SplitFlapText";
 import { ProductHighlights } from "@/components/ProductHighlights";
+import { MotionReveal, MotionRevealStagger, MotionRevealItem } from "@/components/MotionReveal";
 
 const ADMIN_HOST = process.env.ADMIN_HOST || "admin.buildingsync.app";
 
@@ -254,7 +255,8 @@ const PATHWAYS = [
 
 function Pathways() {
   return (
-    <section id="pathways" className="relative max-w-7xl mx-auto px-6 py-16 md:py-24 border-t border-border">
+    <MotionReveal as="section" className="relative max-w-7xl mx-auto px-6 py-16 md:py-24 border-t border-border" y={16}>
+      <span id="pathways" />
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">00 / Journey</p>
       <h2
         className="mt-4 tracking-tight"
@@ -266,11 +268,11 @@ function Pathways() {
         Start from the workflow that matches your role. Move from onboarding to measurable outcomes without guesswork.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <MotionRevealStagger className="mt-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" stagger={0.08}>
         {PATHWAYS.map((p) => (
-          <div
+          <MotionRevealItem
             key={p.title}
-            className="border border-border bg-card p-5 rounded-lg hover:border-accent/60 transition-colors"
+            className="border border-border bg-card p-5 rounded-lg transition-transform duration-200 hover:-translate-y-0.5 hover:border-accent/60"
           >
             <p
               className="text-2xl tracking-tight text-foreground"
@@ -284,10 +286,10 @@ function Pathways() {
                 <li key={b} className="font-mono text-[11px] text-foreground/80">• {b}</li>
               ))}
             </ul>
-          </div>
+          </MotionRevealItem>
         ))}
-      </div>
-    </section>
+      </MotionRevealStagger>
+    </MotionReveal>
   );
 }
 

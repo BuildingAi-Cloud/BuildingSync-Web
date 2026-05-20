@@ -1,8 +1,6 @@
-import { FlatCompat } from "@eslint/eslintrc";
-
-const compat = new FlatCompat({ baseDirectory: process.cwd() });
+import next from "eslint-config-next/core-web-vitals";
 
 export default [
   { ignores: [".next/**", "node_modules/**", "public/**"] },
-  ...compat.extends("next/core-web-vitals"),
+  ...next,
 ];
