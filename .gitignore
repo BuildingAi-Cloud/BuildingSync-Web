@@ -50,6 +50,7 @@ build-*.log
 
 # AI agent customization files (local only)
 AGENTS.md
+CLAUDE.md
 .github/instructions/
 .github/agents/
 .github/skills/
