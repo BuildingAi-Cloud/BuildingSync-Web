@@ -57,31 +57,59 @@ npx prisma studio              # eyeball the tables
 In **Vercel → Settings → Environment Variables** (Production scope):
 - `DATABASE_URL` = pooled Neon URL
 - `DIRECT_URL` = direct Neon URL
-Redeploy. The app now reads/writes Neon.
+- `AUTH_SECRET` = `openssl rand -base64 48` (signs sessions + action links)
+- `IMPERSONATION_SIGNING_SECRET` = `openssl rand -base64 48` (admin "View as")
+Redeploy. The app now reads/writes Neon and runs its own auth.
 
-> Since Supabase was only a test instance, you can delete its env vars right
-> away — there's no data or sessions worth keeping a rollback path for.
+> Since Supabase was only a test instance, you can delete its **auth** env
+> vars right away — there's no data or sessions worth keeping a rollback path
+> for. Keep the Supabase keys ONLY if you still use Supabase Storage for
+> documents (see §5), until that's migrated too.
 
-## 5. Auth — the separate, bigger piece ⚠️
-The DB move alone does **not** move auth. Today `lib/auth.ts` relies on
-**Supabase Auth** for credentials/sessions. Moving fully off Supabase means
-building our own auth (**Auth.js / NextAuth + argon2id**) against the Neon
-`User` table. That's its own workstream (see the architecture migration plan).
-**Sequence:** land the DB on Neon first (data layer works via Prisma), then cut
-over auth. Until auth is migrated, you can run Prisma against Neon while auth
-still points at Supabase — but that's a transitional state, not the end goal.
+## 5. Auth — DONE (own auth, argon2id + signed sessions) ✅
+Auth has been **fully migrated off Supabase Auth.** Credentials live in the
+Neon `User.password` column hashed with **argon2id**; sessions are stateless
+**HMAC-signed cookies** (`lib/auth-core.ts` + `lib/session.ts`, mirroring the
+existing `lib/impersonation` token idiom — no NextAuth/JWT dependency added).
+
+What changed:
+- `lib/auth-actions.ts` — register / login / logout / password-reset /
+  set-password-invite server actions.
+- `lib/auth.ts` + `lib/api-auth.ts` — read our own session (cookie + mobile
+  Bearer = the same signed token).
+- Signup/signin/reset pages, `/auth/signout`, onboarding + account password
+  flows, and team resident/staff **provisioning** (now an emailed
+  set-password invite link, not a temp password) all use own auth.
+- `utils/supabase/{server,client,middleware}.ts` deleted; `proxy.ts` no
+  longer refreshes a Supabase session.
+
+Required new secrets: **`AUTH_SECRET`** and **`IMPERSONATION_SIGNING_SECRET`**
+(see §4 and `.env.example`).
+
+> ⚠️ Still on Supabase: **document file storage** (`app/team/documents`,
+> Supabase Storage). That's a separate, deferred workstream — migrate to
+> Vercel Blob / R2 in its own PR, then the `@supabase/*` dependency and the
+> remaining Supabase env vars can go.
 
 ## 6. Smoke test
 - `npm run build` locally against Neon `.env` → green.
-- Exercise: sign in, load a dashboard, submit a contact form (writes
-  `ContactSubmission`), run an AI feature (writes `AiUsage`), create a policy
-  (writes `Policy`). Confirm rows land in Neon (`prisma studio`).
+- Exercise the own-auth flows end to end:
+  - **Sign up** at `/signup` → creates a `User` row (argon2id hash) and lands
+    you signed-in. Confirm the row in `prisma studio`.
+  - **Sign out** (`/auth/signout`) → **sign in** at `/signin`.
+  - **Forgot password** → email link → `/auth/reset?token=…` sets a new hash.
+  - As a BM, **add a resident/staff** → confirm a passwordless `User` row + a
+    set-password invite email (Resend); follow the link to activate.
+- Then exercise data writes: submit a contact form (`ContactSubmission`), run
+  an AI feature (`AiUsage`), create a policy (`Policy`). Confirm in Neon.
 
 ## 7. Decommission Supabase
-Once production is stable on Neon and auth is migrated:
-- Remove Supabase env vars from Vercel + local.
-- Remove `@supabase/*` deps and the `utils/supabase/*` code in a dedicated PR.
-- Archive the Supabase project.
+Auth is already off Supabase (§5). To finish:
+- **Now:** remove the Supabase **auth** env vars from Vercel + local
+  (`SUPABASE_SERVICE_ROLE_KEY` is no longer used by auth).
+- **After storage migration:** remove `@supabase/*` deps, the
+  `app/team/documents` Supabase Storage code, the remaining Supabase env
+  vars, then archive the Supabase project.
 
 ## Rollback
 N/A in any meaningful sense — Supabase held only throwaway test data, so there

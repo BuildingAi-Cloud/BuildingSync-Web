@@ -130,17 +130,18 @@ export default function SecurityPage() {
             <Card title="During a full Vercel outage">
               The app is unavailable. Vercel publishes incident updates
               at vercel-status.com. No user data is at risk — it lives
-              in Supabase, which is independent.
+              in our managed Postgres database, which is independent.
             </Card>
-            <Card title="During a full Supabase outage">
-              Auth fails (no new sign-ins). Existing in-flight sessions
-              may continue to render cached pages. New writes fail.
-              Supabase publishes incident updates at status.supabase.com.
+            <Card title="During a full database outage">
+              Sign-ins and writes fail until the database recovers.
+              Existing in-flight sessions may continue to render cached
+              pages. Sessions are stateless signed tokens, so they remain
+              valid once connectivity returns.
             </Card>
             <Card title="During a full provider failure (worst case)">
-              We have daily Postgres backups via Supabase&apos;s managed
-              backup. Point-in-time recovery is enabled on the paid plan
-              (5-minute granularity). Recovery target is &lt; 4 hours from
+              We have daily Postgres backups via our managed database
+              provider, with point-in-time recovery enabled (5-minute
+              granularity). Recovery target is &lt; 4 hours from
               decision to operational. The on-premise SKU is the answer
               for customers who can&apos;t accept any cloud-vendor risk —
               they run everything on their own hardware.
